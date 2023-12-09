@@ -6,9 +6,36 @@ public class Main {
     static FastWriter pw;
     static int mod = (int) 1e9 + 7;
 
+    static int ncr(int n , int r){
+        int ans = 1;
+        int den = 1;
+        for(int i = 0 ; i < r ; i++){
+            ans = (int)((ans*(long)n--)%mod);
+            den = (int)((den*(long)(i+1))%mod);
+        }
+        return (int)((ans*(long)power(den,mod-2))%mod);
+    }
+
+    static int power(int a , int b){
+        int ans = 1;
+        while(b>0){
+            if((b&1)!=0){
+                ans = (int)((ans*(long)a)%mod);
+            }
+            a = (int)((a*(long)a)%mod);
+            b>>=1;
+        }
+        return ans;
+    }
+
     static {
         fr = new FastReader();
         pw = new FastWriter();
+    }
+
+    static int gcd(int x , int y){
+        if(y==0)return x;
+        return gcd(y,x%y);
     }
 
     public static void main(String[] args) {
@@ -20,7 +47,38 @@ public class Main {
     }
 
     private static void start() {
-        pw.println("working fine");
+        int n = fr.nextInt();
+        String s = fr.nextLine();
+        ArrayList<int[]> adj = new ArrayList<>();
+        adj.add(new int[2]);
+        boolean leaf[] = new boolean[n+1];
+        for(int i = 0 ; i < n ; i++){
+            int edg[] = new int[2];
+            edg[0] = fr.nextInt();
+            edg[1] = fr.nextInt();
+            if(edg[0]==0&&edg[1]==0)leaf[i+1]=true;
+            else leaf[i+1]=false;
+            adj.add(edg);
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->{
+            return Integer.compare(a[1],b[1]);
+        });
+
+        pq.add(new int[]{1,0});
+        while(!pq.isEmpty()){
+            int cur[] = pq.remove();
+            if(leaf[cur[0]]){
+                pw.println(cur[1]);
+                return;
+            }
+            char c = s.charAt(cur[0]-1);
+            if(adj.get(cur[0])[0]!=0){
+                pq.add(new int[]{adj.get(cur[0])[0] , cur[1]+(c=='L'?0:1)});
+            }
+            if(adj.get(cur[0])[1]!=0){
+                pq.add(new int[]{adj.get(cur[0])[1] , cur[1]+(c=='R'?0:1)});
+            }
+        }
     }
 }
 

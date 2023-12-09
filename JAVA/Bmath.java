@@ -19,7 +19,6 @@ class BMath{
     static long gcd(long x , long y){
         if(y==0)return x;
         return gcd(y,x%y);
-        
     }
 
     static double log2(double x){
@@ -84,6 +83,7 @@ class BMath{
             ft[i]=(int)((i*(long)ft[i-1])%mod);
         }
     }
+
     static int ncr(int n , int r){
         int ans = 1;
         int den = 1;
