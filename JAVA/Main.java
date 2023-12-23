@@ -1,10 +1,12 @@
 import java.io.*;
 import java.util.*;
 
+
+
 public class Main {
     static FastReader fr;
     static FastWriter pw;
-    static int mod = (int) 1e9 + 7;
+    static int mod = (int) 998244353;
 
     static int ncr(int n , int r){
         int ans = 1;
@@ -33,7 +35,7 @@ public class Main {
         pw = new FastWriter();
     }
 
-    static int gcd(int x , int y){
+    static long gcd(long x , long y){
         if(y==0)return x;
         return gcd(y,x%y);
     }
@@ -45,43 +47,57 @@ public class Main {
         }
         pw.close();
     }
+    //4->7
+
+    static void primeFactor(int x , HashMap<Integer,Integer> hm){
+        while(x%2==0){
+            hm.merge(2,1,Integer::sum);
+            x/=2;
+        }
+
+        for(int i = 3 ; i*i <= x ; i++){
+            while (x%i==0){
+                hm.merge(i,1,Integer::sum);
+                x/=i;
+            }
+        }
+
+        if(x>2)
+            hm.merge(x,1,Integer::sum);
+
+        return ;
+    }
 
     private static void start() {
         int n = fr.nextInt();
-        String s = fr.nextLine();
-        ArrayList<int[]> adj = new ArrayList<>();
-        adj.add(new int[2]);
-        boolean leaf[] = new boolean[n+1];
-        for(int i = 0 ; i < n ; i++){
-            int edg[] = new int[2];
-            edg[0] = fr.nextInt();
-            edg[1] = fr.nextInt();
-            if(edg[0]==0&&edg[1]==0)leaf[i+1]=true;
-            else leaf[i+1]=false;
-            adj.add(edg);
+        int arr[] = new int[n];
+        for(int i = 0 ; i < n ; i++)arr[i] = fr.nextInt();
+        int min = Arrays.stream(arr).min().getAsInt();
+        int p = 0;
+        while(p<n&&arr[p]!=min){
+            p++;
         }
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->{
-            return Integer.compare(a[1],b[1]);
-        });
-
-        pq.add(new int[]{1,0});
-        while(!pq.isEmpty()){
-            int cur[] = pq.remove();
-            if(leaf[cur[0]]){
-                pw.println(cur[1]);
-                return;
-            }
-            char c = s.charAt(cur[0]-1);
-            if(adj.get(cur[0])[0]!=0){
-                pq.add(new int[]{adj.get(cur[0])[0] , cur[1]+(c=='L'?0:1)});
-            }
-            if(adj.get(cur[0])[1]!=0){
-                pq.add(new int[]{adj.get(cur[0])[1] , cur[1]+(c=='R'?0:1)});
-            }
+        if(issorted(arr, p)){
+            int ans = 0;
+            ans+=p;
+            pw.println(ans);
+        }else{
+            pw.println(-1);
         }
     }
-}
 
+
+    private static dummy(){
+        return ;
+    }
+
+    private  static boolean issorted(int arr[] , int start){
+        for(int i = start ; i < arr.length-1 ; i++){
+            if(arr[i]>arr[i+1])return false;
+        }
+        return true;
+    }
+}
 class FastWriter {
     PrintWriter pw;
 
@@ -191,5 +207,46 @@ class FastReader {
             e.printStackTrace();
         }
         return str;
+    }
+}
+
+
+class Fenwick{
+    int n;
+    int arr[];
+    int org[];
+    Fenwick(int n){
+        this.n = n+1;
+        this.arr = new int[n+1];
+        this.org = new int[n+1];
+    }
+
+    void add(int i , int e){
+        i++;
+        while(i<n){
+            arr[i]+=e;
+            i+=(i&(-i));
+        }
+    }
+
+    int sum(int i){
+        i++;
+        int sum = 0;
+        while(i>0){
+            sum+=arr[i];
+            i-=(i&(-i));
+        }
+        return sum;
+    }
+
+    int range(int fr , int to){
+        return sum(to)-sum(fr-1);
+    }
+
+    void update(int i , int e){
+        i++;
+        int up = e-org[i];
+        org[i]=e;
+        add(i-1,up);
     }
 }

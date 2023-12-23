@@ -16,17 +16,7 @@ class Main:
 
     def start(self):
         # start from here
-        map = {}
-        n = self.fr.next_int()
-        for i in range(1,n+1):
-            if(n%i==0):
-                digitSum = self.sumDigit(i)
-                if digitSum not in map:
-                    map[digitSum] = []
-                map[digitSum].append(i)
-        maxDigitSum = max(map.keys())
-        smallest = min(map[maxDigitSum])
-        self.fw.println(smallest)
+        self.fw.println('osk')
 
     def main(self):
         t = self.fr.next_int()
@@ -36,7 +26,7 @@ class Main:
         self.fw.close()
 
 class FastWriter:
-    def __init__(self, output_file="../output.txt"):
+    def __init__(self, output_file="output.txt"):
         if output_file and os.path.exists(output_file):
             self.file = open(output_file, 'w')
         else:
@@ -63,7 +53,7 @@ class FastWriter:
 
 
 class FastReader:
-    def __init__(self, input_file="../input.txt"):
+    def __init__(self, input_file="input.txt"):
         if input_file and os.path.exists(input_file):
             self.file = open(input_file, 'r')
         else:
