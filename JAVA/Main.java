@@ -86,11 +86,6 @@ public class Main {
         }
     }
 
-
-    private static dummy(){
-        return ;
-    }
-
     private  static boolean issorted(int arr[] , int start){
         for(int i = start ; i < arr.length-1 ; i++){
             if(arr[i]>arr[i+1])return false;
