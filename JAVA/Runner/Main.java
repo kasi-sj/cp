@@ -1,34 +1,35 @@
+package Runner;
 import java.io.*;
 import java.util.*;
 
+
+
+class P{
+    long x , y;
+    P(long x , long y){
+        this.x = x;
+        this.y = y;
+    }
+
+    static P add(P a , P b){
+        return new P(a.x+b.x,a.y+b.y);
+    }
+
+    static P sub(P a , P b){
+        return new P(a.x-b.x,a.y-b.y);
+    }
+
+    static long cross(P a , P b){
+        return a.x*b.y-a.y*b.x;
+    }
+}
 
 
 public class Main {
     static FastReader fr;
     static FastWriter pw;
     static int mod = (int) 998244353;
-
-    static int ncr(int n , int r){
-        int ans = 1;
-        int den = 1;
-        for(int i = 0 ; i < r ; i++){
-            ans = (int)((ans*(long)n--)%mod);
-            den = (int)((den*(long)(i+1))%mod);
-        }
-        return (int)((ans*(long)power(den,mod-2))%mod);
-    }
-
-    static int power(int a , int b){
-        int ans = 1;
-        while(b>0){
-            if((b&1)!=0){
-                ans = (int)((ans*(long)a)%mod);
-            }
-            a = (int)((a*(long)a)%mod);
-            b>>=1;
-        }
-        return ans;
-    }
+    // static int mod = (int) 1e9+7;
 
     static {
         fr = new FastReader();
@@ -47,52 +48,26 @@ public class Main {
         }
         pw.close();
     }
-    //4->7
-
-    static void primeFactor(int x , HashMap<Integer,Integer> hm){
-        while(x%2==0){
-            hm.merge(2,1,Integer::sum);
-            x/=2;
-        }
-
-        for(int i = 3 ; i*i <= x ; i++){
-            while (x%i==0){
-                hm.merge(i,1,Integer::sum);
-                x/=i;
-            }
-        }
-
-        if(x>2)
-            hm.merge(x,1,Integer::sum);
-
-        return ;
-    }
 
     private static void start() {
-        int n = fr.nextInt();
-        int arr[] = new int[n];
-        for(int i = 0 ; i < n ; i++)arr[i] = fr.nextInt();
-        int min = Arrays.stream(arr).min().getAsInt();
-        int p = 0;
-        while(p<n&&arr[p]!=min){
-            p++;
-        }
-        if(issorted(arr, p)){
-            int ans = 0;
-            ans+=p;
-            pw.println(ans);
+        P p1 , p2 , p3;
+        p1 = new P(fr.nextInt(),fr.nextInt());
+        p2 = new P(fr.nextInt(),fr.nextInt());
+        p3 = new P(fr.nextInt(),fr.nextInt());
+        p2 = P.sub(p2,p1);
+        p3 = P.sub(p3,p1);
+        long cross = P.cross(p2,p3);
+        if(cross==0){
+            pw.println("TOUCH");
+        }else if(cross>0){
+            pw.println("LEFT");
         }else{
-            pw.println(-1);
+            pw.println("RIGHT");
         }
-    }
-
-    private  static boolean issorted(int arr[] , int start){
-        for(int i = start ; i < arr.length-1 ; i++){
-            if(arr[i]>arr[i+1])return false;
-        }
-        return true;
     }
 }
+
+
 class FastWriter {
     PrintWriter pw;
 
@@ -202,46 +177,5 @@ class FastReader {
             e.printStackTrace();
         }
         return str;
-    }
-}
-
-
-class Fenwick{
-    int n;
-    int arr[];
-    int org[];
-    Fenwick(int n){
-        this.n = n+1;
-        this.arr = new int[n+1];
-        this.org = new int[n+1];
-    }
-
-    void add(int i , int e){
-        i++;
-        while(i<n){
-            arr[i]+=e;
-            i+=(i&(-i));
-        }
-    }
-
-    int sum(int i){
-        i++;
-        int sum = 0;
-        while(i>0){
-            sum+=arr[i];
-            i-=(i&(-i));
-        }
-        return sum;
-    }
-
-    int range(int fr , int to){
-        return sum(to)-sum(fr-1);
-    }
-
-    void update(int i , int e){
-        i++;
-        int up = e-org[i];
-        org[i]=e;
-        add(i-1,up);
     }
 }

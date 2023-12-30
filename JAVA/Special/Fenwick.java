@@ -1,3 +1,5 @@
+package Special;
+
 class Fenwick{
     int n;
     int arr[];

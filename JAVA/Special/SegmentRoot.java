@@ -1,4 +1,4 @@
-import java.util.*;
+package Special;
 
 class Root{
     int val;

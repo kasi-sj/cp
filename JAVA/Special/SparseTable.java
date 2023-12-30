@@ -1,10 +1,11 @@
+package Special;
 class SparseTable{
     int n;
     int arr[];
     int table[][];
     int log;
-
     int alog[];
+
     SparseTable(int arr[]) {
         this.arr = arr;
         this.n = arr.length;
