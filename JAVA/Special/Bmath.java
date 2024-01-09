@@ -1,4 +1,3 @@
-package Special;
 import java.util.HashSet;
 
 class BMath{
@@ -23,6 +22,8 @@ class BMath{
     static double log2(double x){
         return log(x)/log(2);
     }
+
+    
 
     static double log10(double x){
         return log(x)/log(10);

@@ -1,4 +1,3 @@
-package Runner;
 class Matrix{
 
     int n;

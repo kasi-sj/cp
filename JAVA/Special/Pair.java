@@ -1,4 +1,3 @@
-package Special;
 
 
 class Pair<T extends Comparable<T>> implements Comparable<Pair<T>> {

@@ -1,3 +1,2 @@
-LEFT
-RIGHT
-TOUCH
+geeksforgeeks
+geek

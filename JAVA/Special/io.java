@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-
 class io {
     static PrintWriter pw;
     static BufferedReader br;
@@ -109,42 +108,5 @@ class io {
 
     static void close() {
         pw.close();
-    }
-}
-
-
-public class Main {
-    // static int mod = (int) 998244353;
-    static int mod = (int) 1e9+7;
-
-    static long gcd(long x , long y){
-        if(y==0)return x;
-        return gcd(y,x%y);
-    }
-
-    public static void main(String[] args) {
-        int t = 1;
-        while (t-- > 0) {
-            start();
-        }
-        io.close();
-    }
-
-    static int power(int a , int b){
-        int ans = 1;
-        while(b>0){
-            if((b&1)!=0){
-                ans = (int)((ans*(long)a)%mod);
-            }
-            a = (int)((a*(long)a)%mod);
-            b>>=1;
-        }
-        return ans;
-    }
-
-    private static void start() {
-        int n = io.nextInt();
-        int w = io.nextInt();
-        int arr[] = new int[n];
     }
 }

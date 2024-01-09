@@ -1,4 +1,3 @@
-package Special;
 import java.io.*;
 import java.util.*;
 

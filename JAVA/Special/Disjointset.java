@@ -1,4 +1,3 @@
-package Special;
 import java.util.Arrays;
 
 class DisjointSet{

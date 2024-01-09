@@ -1,4 +1,3 @@
-package Special;
 
 class Fenwick{
     int n;

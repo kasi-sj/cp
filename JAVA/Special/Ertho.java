@@ -1,4 +1,3 @@
-package Special;
 import java.util.*;
 
 class Ertho{

@@ -1,5 +1,3 @@
-package Special;
-
 class Root{
     int val;
     int left;

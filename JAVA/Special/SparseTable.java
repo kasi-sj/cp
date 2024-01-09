@@ -1,4 +1,3 @@
-package Special;
 class SparseTable{
     int n;
     int arr[];
