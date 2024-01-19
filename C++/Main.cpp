@@ -6,9 +6,34 @@ using namespace std;
 #define LOG 21
 #define MIN -1000000000
 #define MAX 1000000000
- 
+
 void start() {
-    string s;
+    int n , m;
+    cin >> n >> m;
+    vector<pair<int , pair<int , int>>> v;
+    for(int i = 0 ; i < m ; i++){
+        int fr , to , cs;
+        cin >> fr >> to >> cs;
+        v.push_back({cs,{fr,to}});
+    }
+    sort(v.begin(),v.end());
+    DisjointSet ds(n);
+    long ans = 0;
+    int p = 0;
+    while(n>1&&p<v.size()){
+        int p1 = v[p].second.first;
+        int p2 = v[p].second.second;
+        if(ds.insert(p1,p2)){
+            n--;
+            ans+=v[p].first;
+        }
+        p++;
+    }
+    if(n==1){
+        cout << ans << endl;
+    }else{
+        cout << "IMPOSSIBLE" << endl;
+    }
 }
  
 int main() {
