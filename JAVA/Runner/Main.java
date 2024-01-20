@@ -6,7 +6,7 @@ public class Main {
     
     // static int mod = (int) 1e9+7;
     public static void main(String[] args) {
-        int t = io.nextInt();
+        int t = 1;
         while (t-- > 0) {
             start();
         }
@@ -26,50 +26,59 @@ public class Main {
     }
 
     private static void start() {
-        int a  = io.nextInt();
-        int b  = io.nextInt();
-        int min = Math.min(a,b);
-        int max = Math.max(a,b);
-        if(max%2==0){
-            int n1 = max/2;
-            int n2 = max/2+1;
-            int m = max/2;
-            int m2 = (min-m);
-            int m1 = (1+m);
-            long ans = 0;
-            if(m1<=m2){
-                m1 = Math.min(m1,min);
-                m2 = Math.max(m2,1);
-                ans += calculateSum(m1,m2)*n1;
-                ans += calculateSum(m1,m2)*n2;
-            }else{
-                ans += calculateSum(1,min)*n1;
-                ans += calculateSum(1,min)*n2;
-            }
-            io.println(ans);
-        }else{
-            int n1 = max/2+1;
-            int m = max/2;
-            int m1 = 1+m;
-            int m2 = min-m;
-            long ans = 0;
-            if(m1<=m2){
-                m1 = Math.min(m1,min);
-                m2 = Math.max(m2,1);
-                ans += calculateSum(m1,m2)*n1;  
-            }
-            else
-            ans += calculateSum(1,min)*n1;
-            io.println(ans);
+        int n = io.nextInt();
+        int m = io.nextInt();
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> radj = new ArrayList<>();
+        for(int i = 0 ; i <= n ; i++){
+            adj.add(new ArrayList<>());
+            radj.add(new ArrayList<>());
         }
+        for(int i = 0 ; i < m ; i++){
+            int fr = io.nextInt();
+            int to = io.nextInt();
+            adj.get(fr).add(to);
+            radj.get(to).add(fr);
+        }
+        Stack<Integer> st = new Stack<>();
+        
+        int vis[] = new int[n+1];
+        int fis[] = new int[n+1];
+        for(int i = 1 ; i <= n ; i++){
+            if(vis[i]==0)
+            dfs(adj,i,st,vis);
+        }
+        Arrays.fill(vis,0); 
+        int comp = 0;   
+        while(!st.isEmpty()){
+            int node = st.pop();
+            if(fis[node]==0){
+                comp++;
+                fis[node] = comp;
+                scc(radj,node,fis,comp);
+            }
+        }
+        io.println(comp);
+        for(int i = 1 ; i <= n ; i++)io.print(fis[i]+" ");
+        io.println("");
     }
 
-    private static long calculateSum(int a , int b){
-        a--;
-        long pre = (int)((a*(a+1)*(long)power(2,mod-2))%mod);
-        long tot = (int)((b*(b+1)*(long)power(2,mod-2))%mod);
-        ;
-        return tot-pre;
+    private static  void dfs(ArrayList<ArrayList<Integer>> adj , int node , Stack<Integer> st , int vis[]){
+        vis[node] = 1;
+        for(int ad : adj.get(node)){
+            if(vis[ad]==0)
+            dfs(adj,ad,st,vis);
+        }
+        st.add(node);
+    }
+
+    private static void scc(ArrayList<ArrayList<Integer>> radj , int node , int vis[] , int par){
+        for(int ad : radj.get(node)){
+            if(vis[ad]==0){
+                vis[ad] = par;
+                scc(radj,ad,vis,par);
+            }
+        }
     }
 }
 
@@ -212,7 +221,7 @@ class Graph {
 
 
     // used for query releated problem
-    class BinaryLifting {
+    static class BinaryLifting {
         int n;
         int parent[];
         int table[][];
@@ -236,6 +245,51 @@ class Graph {
                 if((k&(1<<b))!=0)ans = table[ans][b];
             }
             return ans;
+        }
+    }
+
+    static class SCC {
+        private static  void dfs(ArrayList<ArrayList<Integer>> adj , int node , Stack<Integer> st , int vis[]){
+            vis[node] = 1;
+            for(int ad : adj.get(node)){
+                if(vis[ad]==0)
+                dfs(adj,ad,st,vis);
+            }
+            st.add(node);
+        }
+    
+        private static void scc(ArrayList<ArrayList<Integer>> radj , int node , int vis[] , int par){
+            for(int ad : radj.get(node)){
+                if(vis[ad]==0){
+                    vis[ad] = par;
+                    scc(radj,ad,vis,par);
+                }
+            }
+        }
+    
+        public static void start(ArrayList<ArrayList<Integer>> adj , ArrayList<ArrayList<Integer>> radj) {
+            int n = adj.size()-1;
+            Stack<Integer> st = new Stack<>();
+            
+            int vis[] = new int[n+1];
+            for(int i = 1 ; i <= n ; i++){
+                if(vis[i]==0)
+                dfs(adj,i,st,vis);
+            }
+            Arrays.fill(vis,0); 
+            int comp = 0;
+            // ArrayList<Integer> ans = new ArrayList<>();
+            while(!st.isEmpty()){
+                int node = st.pop();
+                if(vis[node]==0){
+                    comp++;
+                    vis[node] = comp;
+                    scc(radj,node,vis,comp);
+                    // ans.add(comp);
+                }
+            }
+            io.println(comp);
+            io.spreadArray(vis, 1);
         }
     }
 }

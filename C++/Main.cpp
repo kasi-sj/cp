@@ -8,32 +8,68 @@ using namespace std;
 #define MAX 1000000000
 
 void start() {
-    int n , m;
-    cin >> n >> m;
-    vector<pair<int , pair<int , int>>> v;
-    for(int i = 0 ; i < m ; i++){
-        int fr , to , cs;
-        cin >> fr >> to >> cs;
-        v.push_back({cs,{fr,to}});
+    int n;
+    cin >> n;
+    vector<pair<int,pair<int,int>>> v;
+
+    for(int i = 0; i < n; i++) {
+        int fr, to;
+        cin >> fr >> to ;
+        v.push_back({i,{fr,to}});
     }
-    sort(v.begin(),v.end());
-    DisjointSet ds(n);
-    long ans = 0;
-    int p = 0;
-    while(n>1&&p<v.size()){
-        int p1 = v[p].second.first;
-        int p2 = v[p].second.second;
-        if(ds.insert(p1,p2)){
-            n--;
-            ans+=v[p].first;
+
+    sort(v.begin(), v.end(), [](pair<int,pair<int,int>> a, pair<int,pair<int,int>> b) {
+        if(a.second.second == b.second.second){
+            return b.second.first < a.second.first;
         }
-        p++;
+        return a.second.second < b.second.second;
+    });
+    set<int ,less<int>> s;
+    int ans1[n];
+
+
+    for(auto a : v){
+        int ind = a.first;
+        int fr = a.second.first;
+        int to = a.second.second;
+        auto ub = s.lower_bound(fr);//ceil
+        if(ub!=s.end()){
+            ans1[ind]=1;
+        }else{
+            ans1[ind]=0;
+        }
+        s.insert(fr);
     }
-    if(n==1){
-        cout << ans << endl;
-    }else{
-        cout << "IMPOSSIBLE" << endl;
+    int ans2[n];
+    sort(v.begin(), v.end(), [](pair<int,pair<int,int>> a, pair<int,pair<int,int>> b) {
+        if(a.second.first == b.second.first){
+            return a.second.second > b.second.second;
+        }
+        return a.second.first < b.second.first;
+    });
+
+    s = set<int>();
+    for(auto a : v){
+        int ind = a.first;
+        int fr = a.second.first;
+        int to = a.second.second;
+        auto ub = s.lower_bound(to);//ceil
+        if(ub!=s.end()){
+            ans2[ind]=1;
+        }else{
+            ans2[ind]=0;
+        }
+        s.insert(to);
     }
+    for(int i : ans1){
+        cout << i << " " ;
+    }
+    cout << endl;
+    
+    for(int i : ans2){
+        cout << i << " " ;
+    }
+    cout << endl;
 }
  
 int main() {

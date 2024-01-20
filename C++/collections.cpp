@@ -1,6 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+// lowerbound is equivalent to ceil;
+// upperbound-- is equivalent to floor;
+
 struct comp{
     bool operator()(pair<int,int> &a,pair<int,int> &b){
         // this comparator will sort pair in decreasing order
