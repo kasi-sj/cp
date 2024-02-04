@@ -1,23 +1,22 @@
 import java.io.*;
 import java.util.*;
+class KMP{
 
-class KMP {
-
-    public static int[] computeLPS(String pat) {
+    public static int[] computeLPS(String pat){
         int n = pat.length();
         int lps[] = new int[n];
         lps[0] = 0;
         int i = 1;
         int pre = 0;
-        while (i < n) {
-            if (pat.charAt(i) == pat.charAt(pre)) {
+        while( i < n){
+            if(pat.charAt(i) == pat.charAt(pre)){
                 pre++;
                 lps[i] = pre;
                 i++;
-            } else {
-                if (pre != 0) {
-                    pre = lps[pre - 1];
-                } else {
+            }else{
+                if(pre!=0){
+                    pre = lps[pre-1];
+                }else{
                     lps[i] = 0;
                     i++;
                 }
@@ -26,47 +25,31 @@ class KMP {
         return lps;
     }
 
-    public static int[] search(String txt, String pat) {
+    public static ArrayList<Integer> search(String txt , String pat){
         int n = txt.length();
         int m = pat.length();
         int lps[] = computeLPS(pat);
-        int i = 1;
+        int i = 0;
         int j = 0;
-        int l = 1;
-        int dir = 1;
-        int c = 0;
-        int match = 1;
         ArrayList<Integer> al = new ArrayList<>();
-        while (true) {
-            if (txt.charAt(i) == pat.charAt(j)) {
-                i += dir;
+        while(i<n){
+            if(txt.charAt(i)==pat.charAt(j)){
+                i++;
                 j++;
-            } else {
-                if (j != 0) {
-                    j = lps[j - 1];
-                } else {
-                    i += dir;
+            }else{
+                if(j!=0){
+                    j = lps[j-1];
+                }else{
+                    i++;
                 }
             }
-            if (j == m) {
-                match++;
-                j = lps[j - 1];
+            if(j==m){
+                al.add(i-m);
+                j = lps[j-1];
             }
-            if (i == j && dir == 1)
-                break;
-            if (i == txt.length()) {
-                dir = -1;
-                i = txt.length() - 1;
-            }
-            if (i == 0) {
-                dir = 1;
-                i = 0;
-            }
-            l++;
         }
-        return new int[] { match, l };
+        return al;
     }
-
 }
 
 public class Main {
@@ -81,64 +64,45 @@ public class Main {
         }
         io.close();
     }
-
+    // 6
+    // AA
     private static void start() {
         int n = io.nextInt();
-        int m = io.nextInt();
-        int k = io.nextInt();
-        int adj[][] = new int[n][m];
-        // System.out.println(n+" "+m);
-        for (int i = 0; i < k; i++) {
-            int fr = io.nextInt() - 1;
-            int to = io.nextInt() - 1;
-            adj[fr][to] = 1;
-        }
-        int vis[] = new int[m];
-        Arrays.fill(vis, -1);
-        int cnt = 0;
-        for (int i = 0; i < n; i++) {
-            int gon[] = new int[m];
-            if (can(i, vis, adj, gon)) {
-                cnt++;
-            }
-        }
-        io.println(cnt);
-        for (int i = 0; i < m; i++) {
-            if (vis[i] != -1) {
-                io.println((vis[i] + 1) + " " + (i + 1));
-            }
-        }
+        String s = io.next();
+        int lps[] = KMP.computeLPS(s);
+        int dp[][][] = new int[n][s.length()][n];
+        for(int j[][] : dp)
+        for(int i [] : j)Arrays.fill(i, -1);
+        io.println(noOf(0,0,lps,0,s,n,dp));
     }
 
-    private static int maximumBipartateMatching(int adj[][]) {
-        int n = adj.length;
-        int m = adj[0].length;
-        int vis[] = new int[m];
-        Arrays.fill(vis, -1);
-        int cnt = 0;
-        for (int i = 0; i < n; i++) {
-            int gon[] = new int[m];
-            if (can(i, vis, adj, gon)) {
-                cnt++;
-            }
+    private static int noOf(int i , int j , int lps[] , int take , String s , int n , int dp[][][]){
+        if(i==n){
+            if(take>=1)return 1;
+            return 0;
         }
-        return cnt;
-    }
-
-    private static boolean can(int node, int vis[], int adj[][], int gon[]) {
-        for (int j = 0; j < adj[0].length; j++) {
-            if (adj[node][j] == 1 && gon[j] == 0) {
-                gon[j] = 1;
-                if (vis[j] == -1) {
-                    vis[j] = node;
-                    return true;
-                } else if (can(vis[j], vis, adj, gon)) {
-                    vis[j] = node;
-                    return true;
+        if(dp[i][j][take]!=-1)return dp[i][j][take];
+        int ans = 0;
+        for(char c = 'A' ; c <= 'Z' ; c++){
+            int pre = j;
+            while(pre!=0&&s.charAt(pre)!=c){
+                pre = lps[pre-1];
+            }
+            if(s.charAt(pre)==c){
+                if(pre+1==s.length()){
+                    ans += noOf(i+1,0,lps,take+1,s,n,dp);
+                    ans %= mod;
+                }else{
+                    ans += noOf(i+1,pre+1,lps,take,s,n,dp);
+                    ans %= mod;
                 }
             }
+            else {
+                ans += noOf(i+1,pre,lps,take,s,n,dp);
+                ans %= mod;
+            }
         }
-        return false;
+        return dp[i][j][take] = ans;
     }
 
     static int power(int a, int b) {

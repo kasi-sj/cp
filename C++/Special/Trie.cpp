@@ -1,25 +1,3 @@
-void insert(vector<int> &ans , int ele){
-    int lo = 0;
-    int hi = ans.size()-1;
-    if(ans.size()==0){
-        ans.push_back(ele);
-        return;
-    }
-    while(lo<=hi){
-        int mid = (lo+hi)/2;
-        if(ans[mid]>ele){
-            hi = mid-1;
-        }else{
-            lo = mid+1;
-        }
-    }
-    if(ans.size()==lo){
-        ans.push_back(ele);
-    }else{
-        ans[lo] = ele;
-    }
-}
- 
 struct node {
     node* link[26];
     int val;  // Add a member to store the value associated with the node
