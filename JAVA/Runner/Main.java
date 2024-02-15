@@ -1,64 +1,54 @@
 import java.io.*;
 import java.util.*;
-class KMP{
 
-    public static int[] computeLPS(String pat){
-        int n = pat.length();
-        int lps[] = new int[n];
-        lps[0] = 0;
-        int i = 1;
-        int pre = 0;
-        while( i < n){
-            if(pat.charAt(i) == pat.charAt(pre)){
-                pre++;
-                lps[i] = pre;
-                i++;
-            }else{
-                if(pre!=0){
-                    pre = lps[pre-1];
-                }else{
-                    lps[i] = 0;
-                    i++;
-                }
-            }
-        }
-        return lps;
+class DisjointSet{
+    int size[];
+    int pare[];
+    int edge[];
+    DisjointSet(int n){
+        this.size = new int[n+1];
+        this.pare = new int[n+1];
+        this.edge = new int[n+1];
+        for(int i = 0 ; i < n+1 ; i++)
+            pare[i]=i;
+        Arrays.fill(size,1);
     }
 
-    public static ArrayList<Integer> search(String txt , String pat){
-        int n = txt.length();
-        int m = pat.length();
-        int lps[] = computeLPS(pat);
-        int i = 0;
-        int j = 0;
-        ArrayList<Integer> al = new ArrayList<>();
-        while(i<n){
-            if(txt.charAt(i)==pat.charAt(j)){
-                i++;
-                j++;
-            }else{
-                if(j!=0){
-                    j = lps[j-1];
-                }else{
-                    i++;
-                }
-            }
-            if(j==m){
-                al.add(i-m);
-                j = lps[j-1];
-            }
-        }
-        return al;
+    int getparent(int n){
+        if(pare[n]==n)return n;
+        return pare[n]=getparent(pare[n]);
     }
+
+    boolean insert(int i , int j){
+        int pai = getparent(i);
+        int paj = getparent(j);
+        if(pai==paj){
+            edge[pai]++;
+            return false;
+        }
+
+        if(size[pai]>size[paj]){
+            pare[paj] = pai;
+            size[pai]+=size[paj];
+            edge[pai]+=edge[paj];
+            edge[pai]++;
+        }else{
+            pare[pai] = paj;
+            size[paj]+=size[pai];
+            edge[paj]+=edge[pai];
+            edge[paj]++;
+        }
+        return true;
+    }
+
 }
-
 public class Main {
     // static int mod = (int) 998244353;
 
     static int mod = (int) 1e9 + 7;
 
     public static void main(String[] args) {
-        int t = 1;
+        int t = io.nextInt();
         while (t-- > 0) {
             start();
         }
@@ -66,55 +56,63 @@ public class Main {
     }
     // 6
     // AA
+    static boolean l = false;
+    static boolean r = false;
+    static boolean t = false;
+    static boolean b = false;
+    static int rr[] = new int[]{1,1,1,0,-1,-1,-1,0};
+    static int cc[] = new int[]{-1,0,1,1,1,0,-1,-1};
+    static HashMap<Integer,ArrayList<Integer>> hm;
+    static HashMap<Integer,HashMap<Integer,Boolean>> vis;
     private static void start() {
         int n = io.nextInt();
-        String s = io.next();
-        int lps[] = KMP.computeLPS(s);
-        int dp[][][] = new int[n][s.length()][n];
-        for(int j[][] : dp)
-        for(int i [] : j)Arrays.fill(i, -1);
-        io.println(noOf(0,0,lps,0,s,n,dp));
-    }
-
-    private static int noOf(int i , int j , int lps[] , int take , String s , int n , int dp[][][]){
-        if(i==n){
-            if(take>=1)return 1;
-            return 0;
-        }
-        if(dp[i][j][take]!=-1)return dp[i][j][take];
-        int ans = 0;
-        for(char c = 'A' ; c <= 'Z' ; c++){
-            int pre = j;
-            while(pre!=0&&s.charAt(pre)!=c){
-                pre = lps[pre-1];
+        int m = io.nextInt();
+        hm = new HashMap<>();
+        vis = new HashMap<>();
+        int arr[][] = new int[m][2];
+        for(int i = 0 ; i < m ; i++){
+            int r = io.nextInt();
+            int c = io.nextInt();
+            arr[i][0] = r;
+            arr[i][1] = c;
+            if(!hm.containsKey(r)){
+                hm.put(r,new ArrayList<>());
+                vis.put(r,new HashMap<>());
             }
-            if(s.charAt(pre)==c){
-                if(pre+1==s.length()){
-                    ans += noOf(i+1,0,lps,take+1,s,n,dp);
-                    ans %= mod;
-                }else{
-                    ans += noOf(i+1,pre+1,lps,take,s,n,dp);
-                    ans %= mod;
+            hm.get(r).add(c);
+            vis.get(r).put(c, false);
+        }
+        for(int i = 0 ; i < m ; i++){
+            int ro = arr[i][0];
+            int co = arr[i][1];
+            if(!vis.get(ro).get(co)){
+                dfs(ro,co,n);
+                // io.println(l+" "+b+" "+t+" "+r);
+                if ((l || b) && (t || r)) {
+                    b = t = l = r = false;
+                    io.println("YES");
+                    return;
                 }
             }
-            else {
-                ans += noOf(i+1,pre,lps,take,s,n,dp);
-                ans %= mod;
-            }
+            b =  t  = l  = r = false;
         }
-        return dp[i][j][take] = ans;
+        io.println("NO");
     }
 
-    static int power(int a, int b) {
-        int ans = 1;
-        while (b > 0) {
-            if ((b & 1) != 0) {
-                ans = (int) ((ans * (long) a) % mod);
+     static void dfs(int ro , int co,int n ){
+        vis.get(ro).put(co,true);
+        // io.println(ro+" "+co);
+        if(ro==1)t=true;
+        if(ro==n)b=true;
+        if(co==1)l=true;
+        if(co==n)r=true;
+        for(int i = 0 ; i < 8 ; i++){
+            int nr = rr[i]+ro;
+            int nc = cc[i]+co;
+            if(nr>=1&&nr<=n&&nc>=1&&nc<=n&&vis.containsKey(nr)&&!vis.get(nr).getOrDefault(nc,true)){
+                dfs(nr,nc,n);
             }
-            a = (int) ((a * (long) a) % mod);
-            b >>= 1;
         }
-        return ans;
     }
 }
 

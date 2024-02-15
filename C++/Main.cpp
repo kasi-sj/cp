@@ -36,64 +36,37 @@ ll getHash(int l , int r , ll Hash[]){
 }
 
 void start() {
-    string s;
+    int n;
+    int s;
+    cin >> n;
     cin >> s;
-    int n = s.size();
-    string r = s;
-    reverse(r.begin(),r.end());
-    int j = n-1;
-    calculatePower(n);
-    ll rh1[n];
-    ll rh2[n];
-    rollingHash(s,rh1);
-    rollingHash(r,rh2);
-    int ml = 0;
-    int st = -1;
-    int e = -1;
-    for(int i = 0 ; i < n ; i++,j--){
-        int lo = 0;
-        int hi = i;
-        while(lo<=hi){
-            int mid = (lo+hi)/2;
-            if(j-mid<0){
-                hi = mid-1;
-            }else{
-                int h1 = getHash(i-mid,i,rh1);
-                int h2 = getHash(j-mid,j,rh2);
-                if(h1==h2){
-                    lo = mid+1;
-                }else{
-                    hi = mid-1;
-                }
-            }
-        }
-        if((i+hi)-(i-hi)+1>ml){
-            ml = (i+hi)-(i-hi)+1;
-            st = (i-hi);
-            e = (i+hi);
-        }
-        lo = 0;
-        hi = i;xx
-        while(lo<=hi){
-            int mid = (lo+hi)/2;
-            if(j-1-mid<0){
-                hi = mid-1;
-            }else{
-                int h1 = getHash(i-mid,i,rh1);
-                int h2 = getHash(j-1-mid,j-1,rh2);
-                if(h1==h2){
-                    lo = mid+1;
-                }else{
-                    hi = mid-1;
-                }
-            }
-        }
-        if((i+hi+1)-(i-hi)+1>ml){
-            ml = (i+hi+1)-(i-hi)+1;
-            st = (i-hi);
-        }
+    vector<int> v;
+    for(int i = 0 ; i < n ; i++){
+        int val;
+        cin >> val;
+        v.push_back(val);
     }
-    cout << s.substr(st,ml);
+    ll ans  = 0;
+    map<ll,int> mp;
+    mp[0] = 1;
+    ll sum = 0;
+    for(int i = 0 ; i < n ; i++){
+        sum += v[i];
+        if(mp.count(sum-s)!=0){
+            ans += mp[sum-s];
+        }
+        if(mp.count(sum)!=0){
+            mp[sum]++;
+        }else{
+            mp[sum] = 1;
+        }
+        // for(auto e : mp){
+        //     cout << e.first << " "<< e.second << "-";
+        // }
+        // cout << endl;
+        // cout << sum << " " << ans << endl;
+    }
+    cout << ans << endl;
 }
 
 
