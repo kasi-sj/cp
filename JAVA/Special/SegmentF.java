@@ -1,5 +1,3 @@
-package Special;
-
 import java.util.*;
 
 class SegmentF{
