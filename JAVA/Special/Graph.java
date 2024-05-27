@@ -2,7 +2,7 @@ import java.util.*;
 
 class Graph {
 
-    /*
+    /**
      * AdjacencyList
      */
     public static ArrayList<HashMap<Integer, Integer>> getAdj(ArrayList<int[]> edges, int n, int m) {
@@ -18,7 +18,7 @@ class Graph {
         return al;
     }
 
-    /*
+    /**
      * BellmanFord (Negative cycle )
      * running loop for n times to find negative cycle
      */
@@ -54,7 +54,7 @@ class Graph {
         return ans;
     }
 
-    /*
+    /**
      * point 1 : maximum weight means go for toposort
      * only use toposort if there is no cycle
      * eg : collecting maximum no of coins -> dijistra will take more time
@@ -62,7 +62,7 @@ class Graph {
      * eg : shortest path problems
      */
 
-    /*
+    /**
      * Dijkstra (Shortest Path Algorithm)
      * To find shortest path from source to target
      */
@@ -92,7 +92,7 @@ class Graph {
         return -1;
     }
 
-    /*
+    /**
      * khan's algorithm(Topo sort)
      * for finding toposort of a graph
      * return null if not found a valid toposort
@@ -126,7 +126,7 @@ class Graph {
         return null;
     }
 
-    /*
+    /**
      * cycle in directed graph aswell as undirected
      * return -1 if no cycle
      * return -2 if cycle
@@ -162,7 +162,7 @@ class Graph {
         return -1;
     }
 
-    /*
+    /**
      * Binary Lifting (for finding Lowest Common Ancestor )
      * store the parents of every node by level of two power
      */
@@ -195,7 +195,7 @@ class Graph {
         }
     }
 
-    /*
+    /**
      * Kosaraju's algorithm (Strongly Connected Components)
      * -> normal adjacency list
      * -> reverse adjacency list
@@ -248,7 +248,7 @@ class Graph {
         }
     }
 
-    /*
+    /**
      * Hierholzer's Algorithm. (EulerTour)
      *
      * Eulerian Circuit
@@ -327,7 +327,7 @@ class Graph {
         }
     }
 
-    /*
+    /**
      * Dinic's Algorithm
      * TC => N*N*M
      * Maximum Flow Algorithm
@@ -392,7 +392,7 @@ class Graph {
         }
     }
 
-    /*
+    /**
      * used for finding maximum bibartate matching
      * matching between n*m
      * pair making with maximum count
