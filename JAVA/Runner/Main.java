@@ -13,9 +13,6 @@ public class Main {
         }
         io.close();
     }
-    public static void start(){
-        System.out.println("hai");
-    }
 }
 
 class io {
