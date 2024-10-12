@@ -108,4 +108,16 @@ class BMath {
         int den = ft[n - r];
         return (int) ((nem * (long) power(den, mod - 2)) % mod);
     }
+
+    // used to get the number of ways to partition a set of n objects into k non-empty subsets.
+    public static int stirlingSecondKind(int n, int k) {
+        int[][] S = new int[n + 1][k + 1];
+        S[0][0] = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= Math.min(i, k); j++) {
+                S[i][j] = (int) ((j * (long) (S[i - 1][j] % mod) + (S[i - 1][j - 1] % mod)) % mod);
+            }
+        }
+        return S[n][k];
+    }
 }
