@@ -7,7 +7,7 @@ class Mos {
     public static int[] countOccurrences(int n, int qq, int[] arr, int[][] queries) {
         int ans[] = new int[qq];
         int sqrt = (int)Math.sqrt(n);
-        ArrayList<int[]> al = new ArrayList()<>();
+        ArrayList<int[]> al = new ArrayList<>();
         for(int i = 0 ; i < qq ; i++){
             al.add(new int[]{queries[i][0] , queries[i][1] ,queries[i][2], i});
         }
