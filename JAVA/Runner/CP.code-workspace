@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Special"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"iostream": "cpp",
+			"xiosbase": "cpp"
+		}
+	}
+}

@@ -1,10 +1,14 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
-    // static int mod = (int) 998244353;
+    static int mod = (int) 998244353;
+    static int rr[] = new int[]{-1,0,1,0};
+    static int cc[] = new int[]{0,1,0,-1};
 
-    static int mod = (int) 1e9 + 7;
+    // static int mod = (int) 1e9 + 7;
+    static HashMap<String,Boolean> hm = new HashMap<>();
 
     public static void main(String[] args) {
         int t = io.nextInt();
@@ -13,140 +17,134 @@ public class Main {
         }
         io.close();
     }
-    static int ans[][] = new int[3][2];
+
+
     private static void start(){
         int n = io.nextInt();
-        long m = io.nextLong();
-        long arr[] = new long[n];
-        long qrr[] = new long[n];
-        for(int i = 0 ; i < n ; i++)arr[i] = io.nextLong();
-        for(int i = 0 ; i < n ; i++)qrr[i] = io.nextLong();
-        ArrayList<long[]> al = new ArrayList<>();
-        for(int i = 0 ; i < arr.length ; i++){
-            al.add(new long[]{arr[i],qrr[i]});
+        int arr[][] = new int[n][n];
+        int suf[][] = new int[n][n];
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < n ; j++){
+                arr[i][j] = io.nextInt();
+            }
         }
-        Collections.sort(al,(a,b)->Long.compare(a[0],b[0]));
-        long ans = 0;
-
-        long cnt1 = al.get(0)[0]*1l*al.get(0)[1];
-        if(cnt1 <= m){
-            ans = Math.max(ans , cnt1);
-        }else{
-            long t = m/al.get(0)[0];
-            t = Math.min(t, al.get(0)[1]);
-            ans = Math.max(ans , t*al.get(0)[0]);
+        for(int i = n-1 ; i >= 0 ; i--){
+            for(int j = 0 ; j < n ; j++){
+                suf[i][j] = arr[i][j];
+                if(i+1 < n)
+                suf[i][j] += suf[i+1][j];
+            }
         }
-        for(int i = 0 ; i < n-1 ; i++){
-            cnt1 = al.get(i)[0]*1l*al.get(i)[1];
-            long cnt2 = al.get(i+1)[0]*1l*al.get(i+1)[1];
-            if(cnt1 <= m){
-                ans = Math.max(ans , cnt1);
+        int vis[][] = new int[n][n];
+        int row[] = new int[n];
+        int col[] = new int[n];
+        Arrays.fill(row,-1);
+        Arrays.fill(col,-1);
+        for(int a[] : vis)Arrays.fill(a,-1);
+        int p = 1;
+        while(true){
+            int gone[][] = new int[n][n];
+            if(can(row,col,vis,gone,suf,p)){
+                p++;
             }else{
-                long t = m/al.get(i)[0];
-                t = Math.min(t, al.get(i)[1]);
-                ans = Math.max(ans , t*al.get(i)[0]);
+                break;
             }
-            if(cnt2 <= m){
-                ans = Math.max(ans , cnt2);
-            }else{
-                long t = m/al.get(i+1)[0];
-                t = Math.min(t, al.get(i+1)[1]);
-                ans = Math.max(ans , t*al.get(i+1)[0]);
-            }
-            if(al.get(i+1)[0] - al.get(i)[0] != 1)continue;
-            long nm = m;
-            if(nm <= cnt1){
-                long t = nm/al.get(i)[0];
-                t = Math.min(t, al.get(i)[1]);
-                nm -= t*al.get(i)[0];
-                long an = al.get(i+1)[1];
-                long min = Math.min(t,an);
-                nm -= Math.min(nm , min);
-                ans = Math.max(ans , m-nm);
-            }else {
-                nm -= cnt1;
-                long t = nm/al.get(i+1)[0];
-                t = Math.min(t, al.get(i+1)[1]);
-                nm -= t*al.get(i+1)[0];
-                long an = al.get(i)[1];
-                long min = Math.min(al.get(i+1)[1] - t , an);
-                nm -= Math.min(nm , min);
-                ans = Math.max(ans , m-nm);
-            }
-            // io.println(ans);
         }
-        io.println(ans);
-    }
-    private static long sum(int l , int r , long[] pre){
-        if(l==0)return pre[r];
-        return pre[r]-pre[l-1];
+        io.println(p);
     }
 
-    private static boolean f(int a[][] , int vis , int i , long req ,   int dp[][]){
-        if((vis&(1<<0))!=0&&
-            (vis&(1<<1))!=0&&
-            (vis&(1<<2))!=0)
-        return true;
-        if(i>=a[0].length)return false;
-        if(dp[i][vis]==1)return false;
-        for(int t = 0 ; t < 3 ; t++){
-            if((vis&(1<<t))==0){
-                long sum = 0;
-                for(int ind = i ; ind < a[0].length ; ind++){
-                    sum+=a[t][ind];
-                    if(sum >= req){
-                        if(f(a,vis|(1<<t) , ind+1 , req , dp)){
-                            ans[t] = new int[]{i+1,ind+1};
+    private static boolean can(int row[] , int col[] , int vis[][] , int gon[][] , int suf[][] ,int ele){
+        for(int i = 0 ; i < gon.length ; i++){
+            for(int j = 0 ; j < gon[0].length ; j++){
+                if(suf[i][j] == ele && gon[i][j] == 0){
+                    gon[i][j] = 1;
+                    if(row[i] == -1 && col[j] == -1){
+                        row[i] = ele;
+                        col[j] = ele;
+                        return true;
+                    }else if(row[i] == -1){
+                        if(can(row,col,vis,gon,suf,col[j])){
+                            row[i] = ele;
+                            col[j] = ele;
                             return true;
-                        }else{
-                            break;
+                        }
+                    }else if(col[j] == -1){
+                        if(can(row,col,vis,gon,suf,row[i])){
+                            col[j] = ele;
+                            row[i] = ele;
+                            return true;
+                        }
+                    }else{
+                        if(can(row,col,vis,gon,suf,row[i]) && can(row,col,vis,gon,suf,col[j])){
+                            row[i] = ele;
+                            col[j] = ele;
+                            return true;
                         }
                     }
                 }
             }
         }
-        dp[i][vis] = 1;
         return false;
     }
 
-    public static void nextPermutation(int[] nums) {
-        int n = nums.length;
-        int i = n - 2;
-        while (i >= 0 && nums[i] >= nums[i + 1]) {
-            i--;
+    private static int shortestPart(String arr[] , int[][] pathVisited){
+        Queue<int[]> qu = new LinkedList<>();
+        int n = arr.length;
+        int m = arr[0].length();
+        qu.add(new int[]{0,0});
+        int vis[][] = new int[n][m];
+        for(int i = 0 ; i < n ; i++){
+            for(int j = 0 ; j < m ; j++){
+                if(pathVisited[i][j] == 1)vis[i][j] = 1;
+            }
         }
-        if (i == -1) {
-            reverse(nums, 0, n - 1);
-            return;
+        vis[n-1][m-1] = 0;
+        vis[0][0] = 1;
+        int par[][][] = new int[n][m][2];
+        int time = 0;
+        boolean flag = false;
+        while(!qu.isEmpty()){
+            int s = qu.size();
+            while(s-->0){
+                int cur[] = qu.remove();
+                int r = cur[0];
+                int c = cur[1];
+                if(r==n-1 && c==m-1){
+                    flag = true;
+                    break;
+                }
+                for(int d = 0 ; d < 4 ; d++){
+                    int nr = r + rr[d];
+                    int nc = c + cc[d];
+                    if(nr >= 0 && nc >= 0 && nr < n && nc < m && vis[nr][nc] == 0 && arr[nr].charAt(nc)=='.'){
+                        par[nr][nc] = new int[]{r , c};
+                        vis[nr][nc] = 1;
+                        qu.add(new int[]{nr,nc});
+                    }
+                }
+            }
+            if(flag)break;
+            time++;
         }
-        int j = n - 1;
-        while (nums[j] <= nums[i]) {
-            j--;
-        }
-        swap(nums, i, j);
-        reverse(nums, i + 1, n - 1);
-    }
-    
-    private static void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-    
-    private static void reverse(int[] nums, int start, int end) {
-        while (start < end) {
-            swap(nums, start, end);
-            start++;
-            end--;
-        }
-    }
+        qu.clear();
+        if(vis[n-1][m-1] == 0)return -1;
+        else{
+            qu.add(new int[]{n-1 , m-1});
+            while(!qu.isEmpty()){
+                int cur[] = qu.remove();
+                int r = cur[0];
+                int c = cur[1];
+                int pr = par[r][c][0];
+                int pc = par[r][c][1];
+                qu.add(new int[]{pr,pc});
 
-    public static long factorial(int n) {
-        long result = 1;
-        for (int i = 1; i <= n; i++) {
-            result *= i;
+                pathVisited[r][c] = 1;
+                if(r == 0 && c == 0){
+                    break;
+                }
+            }
+            return time;
         }
-        return result;
     }
 }
 

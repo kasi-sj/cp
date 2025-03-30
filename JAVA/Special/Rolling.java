@@ -7,6 +7,7 @@ class Rolling {
     int rsize ;
     int k ;
     long lsum ;
+    long rsum ;
     void print(){
         System.out.println(left);
         System.out.println(right);
@@ -18,6 +19,7 @@ class Rolling {
         this.rsize = 0;
         this.k = k;
         this.lsum = 0;
+        this.rsum = 0;
     }
 
     void balance(){
@@ -30,6 +32,7 @@ class Rolling {
                 rsize--;
                 lsize++;
                 lsum+=min;
+                rsum-=min;
             }
         }else{
             while(lsize>k){
@@ -40,6 +43,7 @@ class Rolling {
                 lsize--;
                 rsize++;
                 lsum-=max;
+                rsum+=max;
             }
         }
         // print();
@@ -60,6 +64,7 @@ class Rolling {
         }else{
             right.merge(node,1,Integer::sum);
             rsize++;
+            rsum+=node;
         }
         balance();
     }
@@ -72,6 +77,7 @@ class Rolling {
         }else if(right.containsKey(node)){
             right.merge(node,-1,Integer::sum);
             rsize--;
+            rsum-=node;
             if(right.get(node)==0)right.remove(node);
         }
         balance();

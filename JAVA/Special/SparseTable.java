@@ -4,8 +4,9 @@ class SparseTable{
     int table[][];
     int log;
     int alog[];
-
+    
     SparseTable(int arr[]) {
+        
         this.arr = arr;
         this.n = arr.length;
         this.log = (int) Math.ceil(Math.log(n) / Math.log(2))+1;

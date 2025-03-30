@@ -83,15 +83,6 @@ class BMath {
         return ans;
     }
 
-    static void fact() {
-        if (ft[0] == 1)
-            return;
-        ft[0] = 1;
-        for (int i = 1; i < ft.length; i++) {
-            ft[i] = (int) ((i * (long) ft[i - 1]) % mod);
-        }
-    }
-
     static int ncr(int n, int r) {
         int ans = 1;
         int den = 1;
@@ -101,6 +92,15 @@ class BMath {
         }
         return (int) ((ans * (long) power(den, mod - 2)) % mod);
     }
+    static void fact() {
+        if (ft[0] == 1)
+            return;
+        ft[0] = 1;
+        for (int i = 1; i < ft.length; i++) {
+            ft[i] = (int) ((i * (long) ft[i - 1]) % mod);
+        }
+    }
+
 
     static int npr(int n, int r) {
         fact();
@@ -110,6 +110,7 @@ class BMath {
     }
 
     // used to get the number of ways to partition a set of n objects into k non-empty subsets.
+    // eg : n = 3 , k = 2 => 3 [1,2] [3] , [1,3] [2] , [2,3] [1]]
     public static int stirlingSecondKind(int n, int k) {
         int[][] S = new int[n + 1][k + 1];
         S[0][0] = 1;
